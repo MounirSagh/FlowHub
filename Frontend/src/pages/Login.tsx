@@ -13,8 +13,8 @@ import { api } from '../../convex/_generated/api'
 function Login() {
   const { isSignedIn } = useSession()
   const createTask = useMutation(api.Tasks.createTask)
-  const tasksofuser = useQuery(api.Tasks.getTasksofUser)
-  const alltasks = useQuery(api.Tasks.getAllTasks)
+  const tasksofuser = useQuery(api.Tasks.getTasksofUser);
+  const alltasks = useQuery(api.Tasks.getAllTasks);
 
   return (
     <div>

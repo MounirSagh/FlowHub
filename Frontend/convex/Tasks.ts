@@ -29,6 +29,7 @@ export const getTasksofUser = query ({
 })
 
 export const getAllTasks = query ({
+    args: {},
     handler: async(ctx, args) => {
         const user = await ctx.auth.getUserIdentity();
         if(!user){
