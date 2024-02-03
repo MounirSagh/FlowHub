@@ -3,8 +3,11 @@ import { PacmanLoader } from 'react-spinners'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import Login from './pages/Login'
+import Roadmap from './pages/Roadmap'
 import { Providers } from './providers'
+import { ThemeProvider } from '@/components/theme-provider'
+import NavBar from './components/NavBar'
+import Landing from './pages/Landing'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -17,7 +20,8 @@ function App() {
         </div>
       ) : (
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/Roadmap" element={<Roadmap />} />
         </Routes>
       )}
     </Router>
@@ -29,7 +33,10 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <Providers>
-      <App />
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <NavBar />
+        <App />
+      </ThemeProvider>
     </Providers>
   </React.StrictMode>
 )
