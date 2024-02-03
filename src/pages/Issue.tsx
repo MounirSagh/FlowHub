@@ -135,6 +135,118 @@ function Issue() {
       created_at: '2022-02-20',
       due_at: '2022-03-01',
     },
+    {
+      id: 15,
+      ticket_number: 'CICD-1',
+      ticket_name: 'Create CI/CD Pipeline',
+      ticket_priority: 'High',
+      created_at: '2022-02-03',
+      due_at: '2022-02-10',
+    },
+    {
+      id: 16,
+      ticket_number: 'BUG-123',
+      ticket_name: 'Fix Critical Bug',
+      ticket_priority: 'Critical',
+      created_at: '2022-02-01',
+      due_at: '2022-02-08',
+    },
+    {
+      id: 17,
+      ticket_number: 'FEATURE-456',
+      ticket_name: 'Implement New Feature',
+      ticket_priority: 'Medium',
+      created_at: '2022-01-28',
+      due_at: '2022-02-05',
+    },
+    {
+      id: 18,
+      ticket_number: 'TASK-789',
+      ticket_name: 'Refactor Codebase',
+      ticket_priority: 'Low',
+      created_at: '2022-02-05',
+      due_at: '2022-02-15',
+    },
+    {
+      id: 19,
+      ticket_number: 'BUG-456',
+      ticket_name: 'Investigate UI Issue',
+      ticket_priority: 'High',
+      created_at: '2022-02-10',
+      due_at: '2022-02-20',
+    },
+    {
+      id: 20,
+      ticket_number: 'FEATURE-789',
+      ticket_name: 'Enhance User Authentication',
+      ticket_priority: 'Medium',
+      created_at: '2022-02-15',
+      due_at: '2022-02-25',
+    },
+    {
+      id: 21,
+      ticket_number: 'TASK-234',
+      ticket_name: 'Update Documentation',
+      ticket_priority: 'Low',
+      created_at: '2022-02-20',
+      due_at: '2022-03-01',
+    },
+    {
+      id: 22,
+      ticket_number: 'CICD-1',
+      ticket_name: 'Create CI/CD Pipeline',
+      ticket_priority: 'High',
+      created_at: '2022-02-03',
+      due_at: '2022-02-10',
+    },
+    {
+      id: 23,
+      ticket_number: 'BUG-123',
+      ticket_name: 'Fix Critical Bug',
+      ticket_priority: 'Critical',
+      created_at: '2022-02-01',
+      due_at: '2022-02-08',
+    },
+    {
+      id: 24,
+      ticket_number: 'FEATURE-456',
+      ticket_name: 'Implement New Feature',
+      ticket_priority: 'Medium',
+      created_at: '2022-01-28',
+      due_at: '2022-02-05',
+    },
+    {
+      id: 25,
+      ticket_number: 'TASK-789',
+      ticket_name: 'Refactor Codebase',
+      ticket_priority: 'Low',
+      created_at: '2022-02-05',
+      due_at: '2022-02-15',
+    },
+    {
+      id: 26,
+      ticket_number: 'BUG-456',
+      ticket_name: 'Investigate UI Issue',
+      ticket_priority: 'High',
+      created_at: '2022-02-10',
+      due_at: '2022-02-20',
+    },
+    {
+      id: 27,
+      ticket_number: 'FEATURE-789',
+      ticket_name: 'Enhance User Authentication',
+      ticket_priority: 'Medium',
+      created_at: '2022-02-15',
+      due_at: '2022-02-25',
+    },
+    {
+      id: 28,
+      ticket_number: 'TASK-234',
+      ticket_name: 'Update Documentation',
+      ticket_priority: 'Low',
+      created_at: '2022-02-20',
+      due_at: '2022-03-01',
+    },
   ]
   const [searchTerm, setSearchTerm] = useState('')
   const [dueAtFilter, setDueAtFilter] = useState<string | null>(null)
@@ -203,7 +315,7 @@ function Issue() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 ml-24 flex justify-center items-center bottom-10 absolute">
+                <div className="mt-4 ml-10 flex justify-center items-center bottom-10 absolute">
                   {/* Pagination Controls */}
                   {Array.from(
                     { length: Math.ceil(filteredData.length / itemsPerPage) },
