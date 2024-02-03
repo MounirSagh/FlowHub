@@ -22,7 +22,7 @@ const navigationItems = [
   { label: 'Roadmap', path: '/Roadmap', icon: <FaRegMap size={18} /> },
   {
     label: 'Active sprints',
-    path: '/Activesprints',
+    path: '/Active-Sprints',
     icon: <FaListUl size={18} />,
   },
   { label: 'Reports', path: '/Reports', icon: <FaChartLine size={18} /> },

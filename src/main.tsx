@@ -8,6 +8,9 @@ import { Providers } from './providers'
 import { ThemeProvider } from '@/components/theme-provider'
 import NavBar from './components/NavBar'
 import Landing from './pages/Landing'
+import Activesprints from './pages/Activesprints'
+import Report from './pages/Report'
+import Issue from './pages/Issue'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -22,6 +25,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/Roadmap" element={<Roadmap />} />
+          <Route path="/Active-Sprints" element={<Activesprints />} />
+          <Route path="/Reports" element={<Report />} />
+          <Route path="/Issues" element={<Issue />} />
         </Routes>
       )}
     </Router>
