@@ -287,15 +287,12 @@ function Issue() {
                 <div className="mb-4 flex items-center justify-start gap-2">
                   <Input
                     type="email"
-                    placeholder="Email"
+                    placeholder="Search"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <button className=" hover:text-yellow-500 hover:-translate-y-1 duration-1000 shadow-lg">
+                  <button className=" hover:text-yellow-500 hover:-translate-y-1 duration-1000 shadow-lg ml-2">
                     <FaFilter size={18} />
-                  </button>
-                  <button className="hover:text-green-500 hover:-translate-y-1 duration-1000 shadow-lg">
-                    <FaPlusCircle size={20} />
                   </button>
                 </div>
                 <div>
