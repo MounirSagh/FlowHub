@@ -8,6 +8,7 @@ import {
   SignOutButton,
   useSession,
 } from '@clerk/clerk-react'
+import { Input } from '@/components/ui/input'
 
 interface Ticket {
   id: number
@@ -284,17 +285,16 @@ function Issue() {
             <div className="flex items-center">
               <div className="p-4 w-1/4 border-r h-screen">
                 <div className="mb-4 flex items-center justify-start gap-2">
-                  <input
-                    type="text"
-                    placeholder="Search..."
+                  <Input
+                    type="email"
+                    placeholder="Email"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="border p-2 px-6 mr-2 rounded-xl"
                   />
-                  <button className="text-yellow-500 hover:text-yellow-700 hover:-translate-y-1 duration-1000 shadow-lg">
+                  <button className=" hover:text-yellow-500 hover:-translate-y-1 duration-1000 shadow-lg">
                     <FaFilter size={18} />
                   </button>
-                  <button className="text-green-500  hover:text-green-700 hover:-translate-y-1 duration-1000 shadow-lg">
+                  <button className="hover:text-green-500 hover:-translate-y-1 duration-1000 shadow-lg">
                     <FaPlusCircle size={20} />
                   </button>
                 </div>
