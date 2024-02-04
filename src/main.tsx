@@ -11,6 +11,7 @@ import Landing from './pages/Landing'
 import Activesprints from './pages/Activesprints'
 import Report from './pages/Report'
 import Issue from './pages/Issue'
+import { Setup } from './pages/Setup'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -24,6 +25,7 @@ function App() {
       ) : (
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/Setup" element={<Setup />} />
           <Route path="/Roadmap" element={<Roadmap />} />
           <Route path="/Active-Sprints" element={<Activesprints />} />
           <Route path="/Reports" element={<Report />} />

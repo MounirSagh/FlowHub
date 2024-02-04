@@ -17,7 +17,7 @@ function Landing() {
   const navigate = useNavigate()
 
   const handleClick = () => {
-    navigate('/Roadmap')
+    navigate('/Setup')
   }
 
   return (

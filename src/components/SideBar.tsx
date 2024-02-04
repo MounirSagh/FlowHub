@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
+import { api } from '../../convex/_generated/api'
+import { useQuery } from 'convex/react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { FaChartLine, FaRegMap, FaListUl, FaPlus } from 'react-icons/fa'
 import { MdOutlineAssignment } from 'react-icons/md'
 import { TbPointFilled } from 'react-icons/tb'
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from '@/components/ui/navigation-menu'
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface NavBarProps {
   className?: string
@@ -21,7 +22,7 @@ interface NavBarProps {
 const navigationItems = [
   { label: 'Roadmap', path: '/Roadmap', icon: <FaRegMap size={18} /> },
   {
-    label: 'Active sprints',
+    label: 'Active sprint',
     path: '/Active-Sprints',
     icon: <FaListUl size={18} />,
   },
@@ -29,12 +30,13 @@ const navigationItems = [
   { label: 'Issues', path: '/Issues', icon: <MdOutlineAssignment size={22} /> },
 ]
 
-const NavBarElement = ({ item, currentPath }: any) => {
+const NavBarElement = ({ item, currentPath, selectedProject }: any) => {
   const isCurrent = item.path === currentPath
+  const linkPath = selectedProject ? `${item.path}/${selectedProject}` : item.path;
 
   return (
     <Link
-      to={item.path}
+      to={linkPath}
       className={`${
         isCurrent ? '' : ''
       } h-14 flex flex-row justify-between ml-6 items-center rounded-lg gap-2`}
@@ -58,7 +60,11 @@ const NavBarElement = ({ item, currentPath }: any) => {
 
 const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
   const location = useLocation()
-
+  const ProjectofUser = useQuery(api.Project.getProject)
+  const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const handleProjectChange = (selectedValue: string) => {
+    setSelectedProject(selectedValue)
+  }
   return (
     <div
       className={`w-[16vw] relative flex flex-col pt-4 h-screen border-r ml-6 ${className}`}
@@ -67,23 +73,26 @@ const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
         <span className="flex items-center justify-start bg-transparent font-bold opacity-75 cursor-default text-sm mb-2">
           Projects
         </span>
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>
-                <div className="flex flex-col justify-start items-center mr-4">
-                  <h1 className="">CI/CD Pipeline</h1>
-                  <h1 className="text-sm font-extralight">
-                    Software Development
-                  </h1>
-                </div>
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <NavigationMenuLink>Link</NavigationMenuLink>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <Select onValueChange={handleProjectChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select a project" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {ProjectofUser?.map((project: any) => {
+                return (
+                  <SelectItem
+                    value={project.name}
+                    key={project._id}
+                    className=""
+                  >
+                    <h1>{project.name}</h1>
+                  </SelectItem>
+                )
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div className="mt-4">
         <span className="flex items-center justify-start bg-transparent font-bold opacity-75 cursor-default text-sm">
