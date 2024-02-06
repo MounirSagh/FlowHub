@@ -5,6 +5,7 @@ import {
   SignedIn,
   SignedOut,
   UserButton,
+  SignUpButton,
 } from '@clerk/clerk-react'
 
 function NavBar() {
@@ -17,12 +18,6 @@ function NavBar() {
             <UserButton />
             <ModeToggle />
           </SignedIn>
-
-          <SignedOut>
-            <div className="bg-black py-2 px-6 rounded-lg text-white hover:bg-gray-700 duration-1000 hover:-translate-y-1">
-              <SignInButton />
-            </div>
-          </SignedOut>
         </div>
       </div>
     </div>

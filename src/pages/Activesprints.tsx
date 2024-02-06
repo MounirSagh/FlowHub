@@ -11,6 +11,7 @@ import SideBar from '@/components/SideBar'
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa'
 import { RiArrowUpDoubleFill } from 'react-icons/ri'
 import { MdDensityMedium } from 'react-icons/md'
+import { useSelectedProject } from '../context/selectedProject'
 
 interface Ticket {
   id: number
@@ -24,7 +25,8 @@ interface Ticket {
 
 function Activesprint() {
   const { isSignedIn } = useSession()
-
+  const { selectedProject } = useSelectedProject()
+  console.log(selectedProject)
   const data: Ticket[] = [
     {
       id: 1,

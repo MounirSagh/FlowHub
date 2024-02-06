@@ -12,6 +12,7 @@ import Activesprints from './pages/Activesprints'
 import Report from './pages/Report'
 import Issue from './pages/Issue'
 import { Setup } from './pages/Setup'
+import { SelectedProjectProvider } from './context/selectedProject'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -42,8 +43,10 @@ root.render(
   <React.StrictMode>
     <Providers>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <NavBar />
-        <App />
+        <SelectedProjectProvider>
+          <NavBar />
+          <App />
+        </SelectedProjectProvider>
       </ThemeProvider>
     </Providers>
   </React.StrictMode>

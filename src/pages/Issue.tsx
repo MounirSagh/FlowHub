@@ -1,276 +1,68 @@
 import React, { useState } from 'react'
-import { FaFilter, FaPlusCircle } from 'react-icons/fa'
-import SideBar from '@/components/SideBar'
 import {
-  SignedOut,
-  SignedIn,
-  SignInButton,
-  SignOutButton,
-  useSession,
-} from '@clerk/clerk-react'
+  FaArrowDown,
+  FaArrowUp,
+  FaFilter,
+  FaPencilAlt,
+  FaRegComment,
+} from 'react-icons/fa'
+import SideBar from '@/components/SideBar'
+import { useSession } from '@clerk/clerk-react'
 import { Input } from '@/components/ui/input'
+import { useSelectedProject } from '../context/selectedProject'
+import { api } from '../../convex/_generated/api'
+import { useQuery } from 'convex/react'
+import { MdDensityMedium } from 'react-icons/md'
+import { RiArrowUpDoubleFill } from 'react-icons/ri'
 
-interface Ticket {
+interface Task {
   id: number
-  ticket_number: string
-  ticket_name: string
-  ticket_priority: string
-  created_at: string
-  due_at: string
+  title: string
+  description: string
+  priority: string
+  sprintId: string
+  status: string
 }
 
 function Issue() {
   const { isSignedIn } = useSession()
+  const { selectedProject } = useSelectedProject()
+  const tasksofuser = useQuery(api.Task.getTasksofUser)
+
   const itemsPerPage = 8
 
-  const data: Ticket[] = [
-    {
-      id: 1,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-    },
-    {
-      id: 2,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-    },
-    {
-      id: 3,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-    },
-    {
-      id: 4,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-    },
-    {
-      id: 5,
-      ticket_number: 'BUG-456',
-      ticket_name: 'Investigate UI Issue',
-      ticket_priority: 'High',
-      created_at: '2022-02-10',
-      due_at: '2022-02-20',
-    },
-    {
-      id: 6,
-      ticket_number: 'FEATURE-789',
-      ticket_name: 'Enhance User Authentication',
-      ticket_priority: 'Medium',
-      created_at: '2022-02-15',
-      due_at: '2022-02-25',
-    },
-    {
-      id: 7,
-      ticket_number: 'TASK-234',
-      ticket_name: 'Update Documentation',
-      ticket_priority: 'Low',
-      created_at: '2022-02-20',
-      due_at: '2022-03-01',
-    },
-    {
-      id: 8,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-    },
-    {
-      id: 9,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-    },
-    {
-      id: 10,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-    },
-    {
-      id: 11,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-    },
-    {
-      id: 12,
-      ticket_number: 'BUG-456',
-      ticket_name: 'Investigate UI Issue',
-      ticket_priority: 'High',
-      created_at: '2022-02-10',
-      due_at: '2022-02-20',
-    },
-    {
-      id: 13,
-      ticket_number: 'FEATURE-789',
-      ticket_name: 'Enhance User Authentication',
-      ticket_priority: 'Medium',
-      created_at: '2022-02-15',
-      due_at: '2022-02-25',
-    },
-    {
-      id: 14,
-      ticket_number: 'TASK-234',
-      ticket_name: 'Update Documentation',
-      ticket_priority: 'Low',
-      created_at: '2022-02-20',
-      due_at: '2022-03-01',
-    },
-    {
-      id: 15,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-    },
-    {
-      id: 16,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-    },
-    {
-      id: 17,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-    },
-    {
-      id: 18,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-    },
-    {
-      id: 19,
-      ticket_number: 'BUG-456',
-      ticket_name: 'Investigate UI Issue',
-      ticket_priority: 'High',
-      created_at: '2022-02-10',
-      due_at: '2022-02-20',
-    },
-    {
-      id: 20,
-      ticket_number: 'FEATURE-789',
-      ticket_name: 'Enhance User Authentication',
-      ticket_priority: 'Medium',
-      created_at: '2022-02-15',
-      due_at: '2022-02-25',
-    },
-    {
-      id: 21,
-      ticket_number: 'TASK-234',
-      ticket_name: 'Update Documentation',
-      ticket_priority: 'Low',
-      created_at: '2022-02-20',
-      due_at: '2022-03-01',
-    },
-    {
-      id: 22,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-    },
-    {
-      id: 23,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-    },
-    {
-      id: 24,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-    },
-    {
-      id: 25,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-    },
-    {
-      id: 26,
-      ticket_number: 'BUG-456',
-      ticket_name: 'Investigate UI Issue',
-      ticket_priority: 'High',
-      created_at: '2022-02-10',
-      due_at: '2022-02-20',
-    },
-    {
-      id: 27,
-      ticket_number: 'FEATURE-789',
-      ticket_name: 'Enhance User Authentication',
-      ticket_priority: 'Medium',
-      created_at: '2022-02-15',
-      due_at: '2022-02-25',
-    },
-    {
-      id: 28,
-      ticket_number: 'TASK-234',
-      ticket_name: 'Update Documentation',
-      ticket_priority: 'Low',
-      created_at: '2022-02-20',
-      due_at: '2022-03-01',
-    },
-  ]
   const [searchTerm, setSearchTerm] = useState('')
-  const [dueAtFilter, setDueAtFilter] = useState<string | null>(null)
-  const [createdAtFilter, setCreatedAtFilter] = useState<string | null>(null)
-  const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
-
-  const filteredData = data.filter(
+  const filteredData = tasksofuser?.filter(
     (item) =>
-      item.ticket_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.ticket_name.toLowerCase().includes(searchTerm.toLowerCase())
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchTerm.toLowerCase())
   )
-
   const [currentPage, setCurrentPage] = useState(1)
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = filteredData?.slice(indexOfFirstItem, indexOfLastItem)
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
 
-  const [selectedItem, setSelectedItem] = useState<Ticket | null>(null)
-  const handleItemClick = (item: any) => {
+  const [selectedItem, setSelectedItem] = useState<Task | null>(null)
+  const handleItemClick = (item: Task) => {
     setSelectedItem(item)
+  }
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case 'high':
+        return <FaArrowUp color="red" />
+      case 'critical':
+        return <RiArrowUpDoubleFill size={24} color="red" />
+      case 'medium':
+        return <MdDensityMedium color="orange" size={20} />
+      case 'low':
+        return <FaArrowDown color="green" />
+      default:
+        return null
+    }
   }
 
   return (
@@ -282,7 +74,7 @@ function Issue() {
             <div className="p-4 border-b w-screen">
               <h1 className="text-xl font-bold mb-1">My Open Issues</h1>
             </div>
-            <div className="flex items-center">
+            <div className="flex">
               <div className="p-4 w-1/4 border-r h-screen">
                 <div className="mb-4 flex items-center justify-start gap-2">
                   <Input
@@ -291,36 +83,35 @@ function Issue() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <button className=" hover:text-yellow-500 hover:-translate-y-1 duration-1000 shadow-lg ml-2">
+                  <button className="hover:text-yellow-500 hover:-translate-y-1 duration-1000 shadow-lg ml-2">
                     <FaFilter size={18} />
                   </button>
                 </div>
                 <div>
-                  {currentItems.map((item) => (
+                  {currentItems?.map((item: any) => (
                     <div
                       key={item.id}
-                      className={`cursor-pointer ${
-                        selectedItem &&
-                        selectedItem.id === item.id &&
-                        'font-bold'
-                      }`}
+                      className="cursor-pointer"
                       onClick={() => handleItemClick(item)}
                     >
-                      <p className="">{item.ticket_number}</p>
-                      <p className="text-xs font-light">{item.ticket_name}</p>
+                      <p className="">{item.title}</p>
+                      <p className="text-xs font-light">{item.description}</p>
                       <hr className="border-t-1 w-full my-2" />
                     </div>
                   ))}
                 </div>
                 <div className="mt-4 ml-10 flex justify-center items-center bottom-10 absolute">
-                  {/* Pagination Controls */}
                   {Array.from(
-                    { length: Math.ceil(filteredData.length / itemsPerPage) },
+                    {
+                      length: Math.ceil(
+                        (filteredData?.length || 0) / itemsPerPage
+                      ),
+                    },
                     (_, i) => (
                       <button
                         key={i + 1}
                         onClick={() => paginate(i + 1)}
-                        className={`mx-1 px-4 py-2  rounded ${
+                        className={`mx-1 px-4 py-2 rounded ${
                           currentPage === i + 1 ? 'border' : ''
                         }`}
                       >
@@ -330,12 +121,130 @@ function Issue() {
                   )}
                 </div>
               </div>
-              <div className="p-4 w-2/3 border-l h-screen">
-                <h1>Details section</h1>
+              <div className="p-4 w-2/3 border-l">
                 {selectedItem && (
                   <div>
-                    <p className="font-bold">{selectedItem.ticket_number}</p>
-                    <p>{selectedItem.ticket_name}</p>
+                    <div>
+                      <p>{selectedItem.title}</p>
+                      <p className="font-bold text-2xl">{selectedItem.title}</p>
+                    </div>
+                    <div className="flex items-center justify-start gap-2 mt-4">
+                      <button className="flex items-center gap-2 px-4 py-1 border rounded-md hover:-translate-y-1 duration-1000 shadow-sm">
+                        <FaPencilAlt /> Edit
+                      </button>
+                      <button className="flex items-center gap-2 px-4 py-1 border rounded-md hover:-translate-y-1 duration-1000 shadow-sm">
+                        <FaRegComment /> Comment
+                      </button>
+                      <button className="px-4 py-1 border rounded-md hover:-translate-y-1 duration-1000 shadow-sm">
+                        Assign
+                      </button>
+                      <button className="px-4 py-1 border rounded-md hover:-translate-y-1 duration-1000 shadow-sm">
+                        In progress
+                      </button>
+                      <button className="px-4 py-1 border rounded-md hover:-translate-y-1 duration-1000 shadow-sm">
+                        Done
+                      </button>
+                    </div>
+                    <div className="flex items-start mt-2">
+                      <div className="w-1/2">
+                        <h1 className="text-lg font-semibold mb-2 mt-4">
+                          Details
+                        </h1>
+                        <div className="flex flex-col gap-2 ml-4">
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">Type:</h1>
+                            <h1 className="text-sm font-semibold">Coding</h1>
+                          </div>
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">Status:</h1>
+                            <h1 className="text-sm font-semibold bg-blue-500 text-white px-3 py-0.5 rounded-md">
+                              {selectedItem.status}
+                            </h1>
+                          </div>
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">Priority:</h1>
+                            <h1 className="flex items-center gap-2 text-sm font-semibold">
+                              {getPriorityIcon(selectedItem.priority)}{' '}
+                              {selectedItem.priority}
+                            </h1>
+                          </div>
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">
+                              Resolution:
+                            </h1>
+                            <h1 className="text-sm font-semibold">
+                              Unresolved
+                            </h1>
+                          </div>
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">Labels:</h1>
+                            <h1 className="text-sm font-semibold">None</h1>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="w-1/2">
+                        <h1 className="text-lg font-semibold mb-2 mt-4">
+                          People
+                        </h1>
+                        <div className="flex flex-col gap-2 ml-4">
+                          <div className="flex items-start gap-24 mb-2">
+                            <h1 className="text- font-light w-24">Assignee:</h1>
+                            <div className="flex flex-col gap-2">
+                              <h1 className="text-sm font-semibold">
+                                Freindly Robot
+                              </h1>
+                              <h1 className="text-sm font-semibold text-blue-500">
+                                Assign to me
+                              </h1>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-24">
+                            <h1 className="text- font-light w-24">Reporter:</h1>
+                            <h1 className="text-sm font-semibold">
+                              John Smith
+                            </h1>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start mt-2">
+                      <div className="w-1/2">
+                        <h1 className="text-lg font-semibold mb-2 mt-4">
+                          Description
+                        </h1>
+                        <div className="flex flex-col gap-2 ml-4">
+                          <h1 className="text-sm font-light">
+                            Click to add description
+                          </h1>
+                        </div>
+                      </div>
+
+                      <div className="w-1/2">
+                        <h1 className="text-lg font-semibold mb-4 mt-4">
+                          Dates
+                        </h1>
+                        <div className="ml-4">
+                          <div className="flex items-start gap-24 mb-2">
+                            <h1 className="text- font-light w-24">
+                              Created at:
+                            </h1>
+                            <h1 className="text-sm font-semibold">
+                              07 February 2024
+                            </h1>
+                          </div>
+                          <div className="flex items-start gap-24 mb-2">
+                            <h1 className="text- font-light w-24">
+                              Updated at:
+                            </h1>
+                            <h1 className="text-sm font-semibold">
+                              14 February 2024
+                            </h1>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

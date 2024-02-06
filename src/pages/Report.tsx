@@ -8,10 +8,13 @@ import {
 } from '@clerk/clerk-react'
 import React from 'react'
 import SideBar from '@/components/SideBar'
+import { useSelectedProject } from '../context/selectedProject'
+
 
 function Report() {
   const { isSignedIn } = useSession()
-
+  const { selectedProject } = useSelectedProject()
+  console.log(selectedProject)
   return (
     <main>
       {isSignedIn && (

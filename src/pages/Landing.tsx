@@ -4,9 +4,10 @@ import {
   SignInButton,
   SignOutButton,
   useSession,
+  SignUpButton,
 } from '@clerk/clerk-react'
 import { useMutation, useQuery } from 'convex/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { api } from '../../convex/_generated/api'
 import SideBar from '@/components/SideBar'
 import landing from '../../public/images/landing.png'
@@ -16,9 +17,11 @@ function Landing() {
   const { isSignedIn } = useSession()
   const navigate = useNavigate()
 
-  const handleClick = () => {
-    navigate('/Setup')
-  }
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate('/Roadmap');
+    }
+  }, [isSignedIn, navigate]);
 
   return (
     <main className="h-full overflow-hidden">
@@ -33,20 +36,16 @@ function Landing() {
             Empowering your team with seamless collaboration and productivity.
           </p>
 
-          <button className="flex space-x-4">
-            {isSignedIn ? (
-              <div
-                onClick={handleClick}
-                className="bg-black py-2 px-10 rounded-lg text-white hover:bg-gray-700 duration-1000 hover:-translate-y-1"
-              >
-                Get Started
-              </div>
-            ) : (
-              <div className="bg-black py-2 px-10 rounded-lg text-white hover:bg-gray-700 duration-1000 hover:-translate-y-1">
+          <div className="flex space-x-4">
+            <div className="flex items-center gap-2">
+              <div className="bg-white py-2 px-10 rounded-lg text- black hover:bg-gray-300 duration-1000 hover:-translate-y-1">
                 <SignInButton />
               </div>
-            )}
-          </button>
+              <div className="bg-black py-2 px-10 rounded-lg text-white hover:bg-gray-700 duration-1000 hover:-translate-y-1">
+                <SignUpButton />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="flex justify-end w-2/3 z-0">
           <img
@@ -61,7 +60,6 @@ function Landing() {
         <div className="circlePosition w-[400px] h-[300px] bg-[#a78bfa] rounded-[100%] absolute z-1 top-[90%] left-[100%] translate-x-[-50%] translate-y-[-50%] blur-[90px]"></div>
         <div className="circlePosition w-[400px] h-[300px] bg-[#93c5fd] rounded-[100%] absolute z-1 top-[100%] left-[0%] translate-x-[-50%] translate-y-[-50%] blur-[90px]"></div>
         <div className="circlePosition w-[300px] h-[200px] bg-[#6366f1] rounded-[100%] absolute z-1 top-[40%] left-[40%] translate-x-[-50%] translate-y-[-50%] blur-[90px]"></div>
-        {/* Add more balls with different colors or adjust positions as needed */}
       </div>
     </main>
   )

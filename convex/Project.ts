@@ -4,7 +4,6 @@ import { mutation, query } from './_generated/server';
 export const createProject = mutation({
     args: {
         name: v.string(),
-        organizationId: v.id("Organization"),
     },
     handler: async (ctx, args) => {
         const user = await ctx.auth.getUserIdentity();
@@ -13,7 +12,6 @@ export const createProject = mutation({
         }
         await ctx.db.insert("Project", {
             name: args.name,
-            organizationId: args.organizationId,
             created_by : user.subject
         });
     }

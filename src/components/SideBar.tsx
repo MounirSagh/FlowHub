@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useSelectedProject } from '../context/selectedProject'
 
 interface NavBarProps {
   className?: string
@@ -32,11 +33,10 @@ const navigationItems = [
 
 const NavBarElement = ({ item, currentPath, selectedProject }: any) => {
   const isCurrent = item.path === currentPath
-  const linkPath = selectedProject ? `${item.path}/${selectedProject}` : item.path;
 
   return (
     <Link
-      to={linkPath}
+      to={item.path}
       className={`${
         isCurrent ? '' : ''
       } h-14 flex flex-row justify-between ml-6 items-center rounded-lg gap-2`}
@@ -61,8 +61,8 @@ const NavBarElement = ({ item, currentPath, selectedProject }: any) => {
 const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
   const location = useLocation()
   const ProjectofUser = useQuery(api.Project.getProject)
-  const [selectedProject, setSelectedProject] = useState<string | null>(null)
-  const handleProjectChange = (selectedValue: string) => {
+  const { selectedProject, setSelectedProject } = useSelectedProject()
+  const handleProjectChange = (selectedValue: any) => {
     setSelectedProject(selectedValue)
   }
   return (

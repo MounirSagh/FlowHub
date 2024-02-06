@@ -4,10 +4,11 @@ import {mutation, query} from './_generated/server'
 export const createTask = mutation ({
     args: {
         title: v.string(),
+        type: v.string(),
+        number: v.string(),
         description: v.string(),
-        assigned_to: v.id("User"),
         priority: v.string(),
-        due_at: v.string(),
+        status: v.string(),
         sprintId: v.id("Sprint")
     },
     handler: async(ctx, args) => {
@@ -15,14 +16,15 @@ export const createTask = mutation ({
         if(!user){
             throw new Error("You myst be signed in")
         }
-        await ctx.db.insert("Tasks", {
+        await ctx.db.insert("Task", {
             title: args.title,
             priority: args.priority,
             description: args.description,
-            assigned_to: args.assigned_to,
             sprintId: args.sprintId,
-            due_at: args.priority,
             created_by: user.subject,
+            status: args.status,
+            type: args.type,
+            number: args.number,
         })
     }
 })
@@ -34,7 +36,7 @@ export const getTasksofUser = query ({
         if(!user){
             return [];
         }
-        return await ctx.db.query("Tasks").filter((q)=>q.eq(q.field("assigned_to"), user.subject)).collect();
+        return await ctx.db.query("Task").filter((q)=>q.eq(q.field("created_by"), user.subject)).collect();
     }
 })
 
@@ -45,6 +47,6 @@ export const getAllTasks = query ({
         if(!user){
             return [];
         }
-        return await ctx.db.query("Tasks").collect();
+        return await ctx.db.query("Task").collect();
     }
 })
