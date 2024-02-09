@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { api } from '../../convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
@@ -15,9 +15,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useSelectedProject } from '../context/selectedProject'
+import { Button } from './ui/button'
 
 interface NavBarProps {
   className?: string
+  currentProject?: string | null
 }
 
 const navigationItems = [
@@ -31,7 +33,7 @@ const navigationItems = [
   { label: 'Issues', path: '/Issues', icon: <MdOutlineAssignment size={22} /> },
 ]
 
-const NavBarElement = ({ item, currentPath, selectedProject }: any) => {
+const NavBarElement = ({ item, currentPath }: any) => {
   const isCurrent = item.path === currentPath
 
   return (
@@ -58,12 +60,24 @@ const NavBarElement = ({ item, currentPath, selectedProject }: any) => {
   )
 }
 
-const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
+const LeftSideBar: React.FC<NavBarProps> = ({ className, currentProject }) => {
+  const navigate = useNavigate()
   const location = useLocation()
   const ProjectofUser = useQuery(api.Project.getProject)
   const { selectedProject, setSelectedProject } = useSelectedProject()
+
+  useEffect(() => {
+    if (currentProject !== undefined) {
+      setSelectedProject(currentProject)
+    }
+  }, [currentProject, setSelectedProject])
+
   const handleProjectChange = (selectedValue: any) => {
     setSelectedProject(selectedValue)
+  }
+
+  const handleSubmit = () => {
+    navigate('/Setup')
   }
   return (
     <div
@@ -75,7 +89,9 @@ const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
         </span>
         <Select onValueChange={handleProjectChange}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a project" />
+            <SelectValue
+              placeholder={currentProject ? currentProject : 'Select a project'}
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -90,6 +106,13 @@ const LeftSideBar: React.FC<NavBarProps> = ({ className }) => {
                   </SelectItem>
                 )
               })}
+              <Button
+                onClick={handleSubmit}
+                value="new project"
+                className="ml-8 mt-2 mb-2"
+              >
+                New Project
+              </Button>
             </SelectGroup>
           </SelectContent>
         </Select>

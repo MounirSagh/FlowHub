@@ -9,7 +9,8 @@ export const createTask = mutation ({
         description: v.string(),
         priority: v.string(),
         status: v.string(),
-        sprintId: v.id("Sprint")
+        sprintId: v.id("Sprint"),
+        projectName: v.string(),
     },
     handler: async(ctx, args) => {
         const user = await ctx.auth.getUserIdentity();
@@ -25,6 +26,7 @@ export const createTask = mutation ({
             status: args.status,
             type: args.type,
             number: args.number,
+            projectName: args.projectName
         })
     }
 })
@@ -40,13 +42,30 @@ export const getTasksofUser = query ({
     }
 })
 
-export const getAllTasks = query ({
-    args: {},
+export const getTasksofSprint = query ({
+    args: {
+        sprintId: v.optional(v.id("Sprint"))
+    },
     handler: async(ctx, args) => {
         const user = await ctx.auth.getUserIdentity();
         if(!user){
             return [];
         }
-        return await ctx.db.query("Task").collect();
+        return await ctx.db.query("Task").filter((q)=>q.eq(q.field("created_by"), user.subject)).filter((q) => q.eq(q.field("sprintId"), args.sprintId)).collect();
     }
 })
+
+
+export const getTasksofProject = query ({
+    args: {
+          projectName:  v.optional(v.string()),
+    },
+    handler: async(ctx, args) => {
+        const user = await ctx.auth.getUserIdentity();
+        if(!user){
+            return [];
+        }
+        return await ctx.db.query("Task").filter((q)=>q.eq(q.field("created_by"), user.subject)).filter((q) => q.eq(q.field("projectName"), args.projectName)).collect();
+    }
+})
+

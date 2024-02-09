@@ -6,12 +6,14 @@ import {
   SignOutButton,
   useSession,
 } from '@clerk/clerk-react'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SideBar from '@/components/SideBar'
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa'
 import { RiArrowUpDoubleFill } from 'react-icons/ri'
 import { MdDensityMedium } from 'react-icons/md'
 import { useSelectedProject } from '../context/selectedProject'
+import { useQuery } from 'convex/react'
+import { api } from '../../convex/_generated/api'
 
 interface Ticket {
   id: number
@@ -27,101 +29,14 @@ function Activesprint() {
   const { isSignedIn } = useSession()
   const { selectedProject } = useSelectedProject()
   console.log(selectedProject)
-  const data: Ticket[] = [
-    {
-      id: 1,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-      status: 'to do',
-    },
-    {
-      id: 2,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-      status: 'to do',
-    },
-    {
-      id: 3,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-      status: 'In progress',
-    },
-    {
-      id: 4,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-      status: 'In progress',
-    },
-    {
-      id: 8,
-      ticket_number: 'CICD-1',
-      ticket_name: 'Create CI/CD Pipeline',
-      ticket_priority: 'High',
-      created_at: '2022-02-03',
-      due_at: '2022-02-10',
-      status: 'to do',
-    },
-    {
-      id: 9,
-      ticket_number: 'BUG-123',
-      ticket_name: 'Fix Critical Bug',
-      ticket_priority: 'Critical',
-      created_at: '2022-02-01',
-      due_at: '2022-02-08',
-      status: 'to do',
-    },
-    {
-      id: 11,
-      ticket_number: 'TASK-789',
-      ticket_name: 'Refactor Codebase',
-      ticket_priority: 'Low',
-      created_at: '2022-02-05',
-      due_at: '2022-02-15',
-      status: 'done',
-    },
-    {
-      id: 12,
-      ticket_number: 'BUG-456',
-      ticket_name: 'Investigate UI Issue',
-      ticket_priority: 'High',
-      created_at: '2022-02-10',
-      due_at: '2022-02-20',
-      status: 'done',
-    },
-    {
-      id: 13,
-      ticket_number: 'FEATURE-789',
-      ticket_name: 'Enhance User Authentication',
-      ticket_priority: 'Medium',
-      created_at: '2022-02-15',
-      due_at: '2022-02-25',
-      status: 'done',
-    },
+  const sprint = useQuery(api.Sprint.getLastSprint, {
+    projectName: selectedProject ?? undefined,
+  })
+  const tasks = useQuery(api.Task.getTasksofUser)
+  const filteredTasks = tasks?.filter((task) => task.sprintId === sprint?._id)
 
-    {
-      id: 24,
-      ticket_number: 'FEATURE-456',
-      ticket_name: 'Implement New Feature',
-      ticket_priority: 'Medium',
-      created_at: '2022-01-28',
-      due_at: '2022-02-05',
-      status: 'to do',
-    },
-  ]
-  const filterTickets = (status: string) => {
-    return data.filter((ticket) => ticket.status === status)
+  const filterTicketsbystatus = (status: string) => {
+    return filteredTasks?.filter((ticket) => ticket.status === status)
   }
 
   const getPriorityIcon = (priority: string) => {
@@ -140,46 +55,58 @@ function Activesprint() {
   }
 
   const renderTicketCards = (status: string) => {
-    const tickets = filterTickets(status)
-    return tickets.map((ticket) => (
-      <div key={ticket.id} className="p-4 border shadow-md rounded-md mb-2">
+    const tickets = filterTicketsbystatus(status)
+    return tickets?.map((ticket) => (
+      <div key={ticket._id} className="p-4 border shadow-md rounded-md mb-2">
         <div className="flex items-center justify-between">
-          <p className="font-bold">{ticket.ticket_number}</p>
-          <p>{getPriorityIcon(ticket.ticket_priority)}</p>
+          <p className="font-bold">{ticket.number}</p>
+          <p>{getPriorityIcon(ticket.priority)}</p>
         </div>
-        <p className="text-sm font-light">{ticket.ticket_name}</p>
+        <p className="text-sm font-light">{ticket.title}</p>
       </div>
     ))
   }
 
   return (
-    <main>
+    <main className="h-screen">
       {isSignedIn && (
-        <div className="flex h-screen">
-          <SideBar />
-          <div className=" w-screen overflow-y-scroll">
-            <div className="p-4 border-b w-screen">
-              <h1 className="text-xl font-bold mb-1">Last Sprint Name</h1>
-              <p className="text-sm font-light">
-                <span className="font-bold text-sm">due at: {''}</span>
-                2022-05-11
-              </p>
-            </div>
-            <div className="grid grid-cols-3 gap-2 p-4">
-              <div className="h-full border shadow-sm p-4">
-                <h1 className="mb-2">To Do</h1>
-                {renderTicketCards('to do')}
+        <div className="flex">
+          <SideBar currentProject={selectedProject} />
+          <div className=" w-screen overflow-hidden">
+            {selectedProject && sprint ? (
+              <div>
+                <div className="p-4 border-b w-screen">
+                  <h1 className="text-xl font-bold mb-1">
+                    {selectedProject} {''}
+                    <span className="font-light">
+                      {''} / {sprint?.name}
+                    </span>
+                  </h1>
+                  <p className="text-sm font-light">
+                    <span className="font-bold text-sm">due at: {''}</span>
+                    {sprint?.due_at}
+                  </p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 p-4">
+                  <div className="h-full border shadow-sm p-4">
+                    <h1 className="mb-2">To Do</h1>
+                    {renderTicketCards('to do')}
+                  </div>
+                  <div className="h-full border shadow-sm p-4">
+                    <h1 className="mb-2">In Progress</h1>
+                    {renderTicketCards('In progress')}
+                  </div>
+                  <div className="h-full border shadow-sm p-4">
+                    <h1 className="mb-2">Done</h1>
+                    {renderTicketCards('done')}
+                  </div>
+                </div>
               </div>
-              <div className="h-full border shadow-sm p-4">
-                <h1 className="mb-2">In Progress</h1>
-                {renderTicketCards('In progress')}
+            ) : (
+              <div className="flex items-center text-sm p-8">
+                No project has been chosen
               </div>
-              <div className="h-full border shadow-sm p-4">
-                <h1 className="mb-2">Done</h1>
-                {renderTicketCards('done')}
-              </div>
-            </div>
-            <div></div>
+            )}
           </div>
         </div>
       )}

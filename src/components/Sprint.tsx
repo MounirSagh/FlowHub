@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 import { SignedOut, SignedIn } from '@clerk/clerk-react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
@@ -32,6 +30,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectGroup,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface Task {
   title: string
@@ -42,14 +48,13 @@ interface Task {
   [key: string]: string
 }
 
-function addsprint() {
+function Sprint() {
   const { selectedProject } = useSelectedProject()
   const [sprintName, setSprintName] = useState('')
-  const [sprintDate, setSprintDate] = useState<Date | null>(null)
+  const [sprintDate, setSprintDate] = useState<Date | undefined>(undefined)
   const [tasks, setTasks] = useState<Task[]>([
     { title: '', description: '', priority: '', number: '', type: '' },
   ])
-
   const createSprint = useMutation(api.Sprint.createSprint)
   const createTask = useMutation(api.Task.createTask)
 
@@ -67,7 +72,7 @@ function addsprint() {
   }
 
   const handleSubmit = () => {
-    if (selectedProject !== null) {
+    if (selectedProject) {
       createSprint({
         name: sprintName,
         due_at: sprintDate?.toString() || '',
@@ -82,12 +87,13 @@ function addsprint() {
             status: 'to do',
             number: task.number,
             type: task.type,
+            projectName: selectedProject,
           })
         })
       })
 
       setSprintName('')
-      setSprintDate(null)
+      setSprintDate(undefined)
       setTasks([
         { title: '', description: '', priority: '', number: '', type: '' },
       ])
@@ -97,12 +103,10 @@ function addsprint() {
   return (
     <main>
       <SignedIn>
-        {/* if selected project is null or empty string then display a simple div with text choose project */}
-        <div className="flex h-screen">
-          <SideBar />
-          <div className="w-screen p-8 overflow-y-scroll">
+        <div className="flex">
+          <div className="p-8">
             {selectedProject ? (
-              <Card className="w-[800px] ">
+              <Card className="w-[800px]">
                 <CardHeader>
                   <CardTitle>Create Sprint</CardTitle>
                   <CardDescription>
@@ -122,7 +126,7 @@ function addsprint() {
                           <Label htmlFor="sprintName">Sprint Name</Label>
                           <Input
                             id="sprintName"
-                            placeholder="Name of your sprint"
+                            placeholder="Enter Sprint Name"
                             value={sprintName}
                             onChange={(e) => setSprintName(e.target.value)}
                           />
@@ -142,7 +146,7 @@ function addsprint() {
                                 {sprintDate ? (
                                   format(sprintDate, 'PPP')
                                 ) : (
-                                  <span>Pick a date</span>
+                                  <span>Select a date</span>
                                 )}
                               </Button>
                             </PopoverTrigger>
@@ -150,7 +154,11 @@ function addsprint() {
                               <Calendar
                                 mode="single"
                                 selected={sprintDate}
-                                onSelect={setSprintDate}
+                                onSelect={(day) => {
+                                  if (day instanceof Date) {
+                                    setSprintDate(day)
+                                  }
+                                }}
                                 initialFocus
                               />
                             </PopoverContent>
@@ -163,17 +171,22 @@ function addsprint() {
                             key={index}
                             className="flex flex-col gap-4 w-[500px]"
                           >
-                            <AccordionItem key={index} value={`item-${index + 1}`}>
+                            <AccordionItem
+                              key={index}
+                              value={`item-${index + 1}`}
+                            >
                               <AccordionTrigger>
                                 Task {index + 1}
                               </AccordionTrigger>
-                              <AccordionContent  className="flex flex-col gap-4 w-[500px]">
+                              <AccordionContent className="flex flex-col gap-4 w-[500px] ml-4">
                                 <div className="flex items-center gap-20">
                                   <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">Task Number</Label>
+                                    <Label htmlFor="taskNumber">
+                                      Task Number
+                                    </Label>
                                     <Input
-                                      id="Task"
-                                      placeholder="Number of your Task"
+                                      id="taskNumber"
+                                      placeholder="Enter Task Number"
                                       value={task.number}
                                       onChange={(e) =>
                                         handleTaskChange(
@@ -185,15 +198,17 @@ function addsprint() {
                                     />
                                   </div>
                                   <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">Task Title</Label>
+                                    <Label htmlFor="taskTitle">
+                                      Task Title
+                                    </Label>
                                     <Input
-                                      id="Task"
-                                      placeholder="Title of your Task"
+                                      id="taskTitle"
+                                      placeholder="Enter Task Title"
                                       value={task.title}
                                       onChange={(e) =>
                                         handleTaskChange(
                                           index,
-                                          'tilte',
+                                          'title',
                                           e.target.value
                                         )
                                       }
@@ -202,28 +217,51 @@ function addsprint() {
                                 </div>
                                 <div className="flex items-center gap-20">
                                   <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">Task Type</Label>
-                                    <Input
-                                      id="Task"
-                                      placeholder="Type of your Task"
+                                    <Label htmlFor="taskType">Task Type</Label>
+                                    <Select
                                       value={task.type}
-                                      onChange={(e) =>
+                                      onValueChange={(e: string) =>
                                         handleTaskChange(
                                           index,
                                           'type',
-                                          e.target.value
+                                          e
                                         )
                                       }
-                                    />
+                                    >
+                                      <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select Task Type" />
+                                      </SelectTrigger>
+                                      <SelectGroup>
+                                        <SelectContent>
+                                          <SelectItem value="frontend">
+                                            Frontend
+                                          </SelectItem>
+                                          <SelectItem value="backend">
+                                            Backend
+                                          </SelectItem>
+                                          <SelectItem value="documentation">
+                                            Documentation
+                                          </SelectItem>
+                                          <SelectItem value="security">
+                                            Security
+                                          </SelectItem>
+                                          <SelectItem value="review">
+                                            Review
+                                          </SelectItem>
+                                          <SelectItem value="database">
+                                            Database
+                                          </SelectItem>
+                                        </SelectContent>
+                                      </SelectGroup>
+                                    </Select>
                                   </div>
-
                                   <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">
+                                    <Label htmlFor="taskDescription">
                                       Task Description
                                     </Label>
                                     <Input
-                                      id="Task"
-                                      placeholder="Description of your Task"
+                                      id="taskDescription"
+                                      placeholder="Enter Task Description"
                                       value={task.description}
                                       onChange={(e) =>
                                         handleTaskChange(
@@ -235,39 +273,38 @@ function addsprint() {
                                     />
                                   </div>
                                 </div>
-
                                 <div className="flex items-center gap-20">
                                   <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">
-                                      Task Description
+                                    <Label htmlFor="taskPriority">
+                                      Task Priority
                                     </Label>
-                                    <Input
-                                      id="Task"
-                                      placeholder="Description of your Task"
-                                      value={task.description}
-                                      onChange={(e) =>
-                                        handleTaskChange(
-                                          index,
-                                          'description',
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                  <div className="flex flex-col space-y-1.5 w-[200px]">
-                                    <Label htmlFor="Task">Task Priority</Label>
-                                    <Input
-                                      id="Task"
-                                      placeholder="Priority of your Task"
+                                    <Select
                                       value={task.priority}
-                                      onChange={(e) =>
+                                      onValueChange={(e: string) =>
                                         handleTaskChange(
                                           index,
                                           'priority',
-                                          e.target.value
+                                          e
                                         )
                                       }
-                                    />
+                                    >
+                                      <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select Task Priority" />
+                                      </SelectTrigger>
+
+                                      <SelectContent>
+                                        <SelectItem value="critical">
+                                          Critical
+                                        </SelectItem>
+                                        <SelectItem value="high">
+                                          High
+                                        </SelectItem>
+                                        <SelectItem value="medium">
+                                          Medium
+                                        </SelectItem>
+                                        <SelectItem value="low">Low</SelectItem>
+                                      </SelectContent>
+                                    </Select>
                                   </div>
                                 </div>
                               </AccordionContent>
@@ -275,7 +312,6 @@ function addsprint() {
                           </div>
                         ))}
                       </Accordion>
-
                       <Label
                         className="flex flex-col space-y-1.5 border p-2 rounded-md"
                         onClick={handleAddTask}
@@ -287,7 +323,7 @@ function addsprint() {
                 </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button variant="outline">Cancel</Button>
-                  <Button>Create</Button>
+                  <Button onClick={handleSubmit}>Create</Button>
                 </CardFooter>
               </Card>
             ) : (
@@ -302,4 +338,4 @@ function addsprint() {
   )
 }
 
-export default addsprint
+export default Sprint

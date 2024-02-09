@@ -2,19 +2,21 @@ import React, { useState } from 'react'
 import { SignedIn } from '@clerk/clerk-react'
 import SideBar from '@/components/SideBar'
 import { useSelectedProject } from '../context/selectedProject'
+import Sprint from '@/components/Sprint'
 
 function Roadmap() {
   const { selectedProject } = useSelectedProject()
-
+  console.log(selectedProject)
 
   return (
-    <main>
-      <SignedIn>      
-        <div className="flex h-screen">
-          <SideBar />
-          <div className="w-screen p-8 overflow-y-scroll">
+    <main className="h-screen">
+      <SignedIn>
+        <div className="flex">
+          <SideBar currentProject={selectedProject} />
+          <div className="w-screen p-8 overflow-hidden">
             {selectedProject ? (
               <div>
+                <Sprint />
               </div>
             ) : (
               <div className="flex items-center text-sm">
@@ -29,4 +31,3 @@ function Roadmap() {
 }
 
 export default Roadmap
-

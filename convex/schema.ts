@@ -10,7 +10,8 @@ export default defineSchema({
     priority: v.string(),
     description: v.string(),
     status: v.string(),
-    sprintId: v.id("Sprint")
+    sprintId: v.id("Sprint"),
+    projectName: v.string(),
   }),
 
   Project: defineTable({
@@ -18,17 +19,17 @@ export default defineSchema({
     created_by: v.string()
   }),
 
-  User: defineTable({
-    name: v.string(),
-    email: v.string(),
-    organizationId: v.id("Organization")
-  }),
-
   Sprint: defineTable({
     name: v.string(),
     due_at: v.string(),
     created_by: v.string(),
-    projectName: v.string()
+    projectName: v.optional(v.string()),
+  }),
+
+  Link: defineTable({
+    link: v.string(),
+    projectName: v.optional(v.string()),
+    created_by: v.string()
   }),
 
 });
