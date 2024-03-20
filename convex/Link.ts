@@ -3,6 +3,7 @@ import { mutation, query } from './_generated/server';
 
 export const createLink = mutation({
     args: {
+        title: v.string(),
         link: v.string(),
         projectName: v.optional(v.string()),
     },
@@ -12,6 +13,7 @@ export const createLink = mutation({
             throw new Error("You myst be signed in")
         }
         return await ctx.db.insert("Link", {
+            title: args.title,
             link: args.link,
             created_by: user.subject,
             projectName: args.projectName,

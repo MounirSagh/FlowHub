@@ -7,12 +7,15 @@ import {
   useSession,
 } from '@clerk/clerk-react'
 import React from 'react'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import { useSelectedProject } from '../context/selectedProject'
 import { api } from '../../convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { FaClipboardList, FaTasks, FaCheckCircle } from 'react-icons/fa'
-import Table from '@/components/table'
+import Table from '@/components/Table'
+import Pie from '@/components/Charts/Pie'
+import Tree from '@/components/Charts/Tree'
+import Bar from '@/components/Charts/Bar'
 
 function Report() {
   const { isSignedIn } = useSession()
@@ -30,9 +33,9 @@ function Report() {
   const tasknum = useQuery(api.Analytics.getTasksByProject, {
     projectName: selectedProject ?? undefined,
   })
-  const lastsprints = useQuery(api.Analytics.getLastFiveSprints, {
-    projectName: selectedProject ?? undefined,
-  })
+  // const lastsprints = useQuery(api.Analytics.getLastFiveSprints, {
+  //   projectName: selectedProject ?? undefined,
+  // })
 
   const distributionbytype = useQuery(
     api.Analytics.getTasksByTypeDistribution,
@@ -54,11 +57,11 @@ function Report() {
   console.log('FFFFFFFFFFFFFFF', distributionbytype)
 
   return (
-    <main className="h-screen">
+    <main className="">
       {isSignedIn && (
-        <div className="flex">
+        <div className="flex h-screen ">
           <SideBar currentProject={selectedProject} />
-          <div className=" w-screen p-8 overflow-y-scroll">
+          <div className=" w-screen p-8 overflow-y-scroll overflow-x-hidden">
             {selectedProject ? (
               <div className="grid grid-cols-5 gap-4">
                 <div className="col-span-3 flex flex-col gap-4 w-full h-full">
@@ -104,7 +107,10 @@ function Report() {
                   {/* CHART */}
                   <div className="row-span-1">
                     <div className="h-[400px] rounded-lg border p-4 shadow-lg">
-                      Chart 1
+                      <h1 className="font-semibold text-lg mb-6">
+                        Tasks Report
+                      </h1>
+                      <Bar />
                     </div>
                   </div>
                   {/* TABLE */}
@@ -113,8 +119,17 @@ function Report() {
                   </div>
                 </div>
                 <div className="col-span-2 grid grid-rows-2 gap-4">
-                  <div className="p-4 rounded-lg border shadow-lg">CHART2</div>
-                  <div className="p-4 rounded-lg border shadow-lg">CHART3</div>
+                  <div className="p-4 rounded-lg border shadow-lg">
+                    <h1 className="font-semibold text-lg">
+                      Priority Distribution{' '}
+                    </h1>
+                    <Pie />{' '}
+                  </div>
+                  <div className="p-4 rounded-lg border shadow-lg">
+                    {' '}
+                    <h1 className="font-semibold text-lg mb-6">Analytics</h1>
+                    <Tree />
+                  </div>
                 </div>
               </div>
             ) : (

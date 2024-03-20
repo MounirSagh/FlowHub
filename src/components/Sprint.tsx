@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { SignedOut, SignedIn } from '@clerk/clerk-react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import { useSelectedProject } from '../context/selectedProject'
 import { Button } from '@/components/ui/button'
 import {
@@ -221,11 +221,7 @@ function Sprint() {
                                     <Select
                                       value={task.type}
                                       onValueChange={(e: string) =>
-                                        handleTaskChange(
-                                          index,
-                                          'type',
-                                          e
-                                        )
+                                        handleTaskChange(index, 'type', e)
                                       }
                                     >
                                       <SelectTrigger className="w-[180px]">
@@ -281,11 +277,7 @@ function Sprint() {
                                     <Select
                                       value={task.priority}
                                       onValueChange={(e: string) =>
-                                        handleTaskChange(
-                                          index,
-                                          'priority',
-                                          e
-                                        )
+                                        handleTaskChange(index, 'priority', e)
                                       }
                                     >
                                       <SelectTrigger className="w-[180px]">

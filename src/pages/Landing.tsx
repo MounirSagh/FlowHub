@@ -9,7 +9,7 @@ import {
 import { useMutation, useQuery } from 'convex/react'
 import React, { useEffect } from 'react'
 import { api } from '../../convex/_generated/api'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import landing from '../../public/images/landing.png'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,9 +19,9 @@ function Landing() {
 
   useEffect(() => {
     if (isSignedIn) {
-      navigate('/Roadmap');
+      navigate('/Roadmap')
     }
-  }, [isSignedIn, navigate]);
+  }, [isSignedIn, navigate])
 
   return (
     <main className="h-full overflow-hidden">

@@ -6,7 +6,7 @@ import {
   FaPencilAlt,
   FaRegComment,
 } from 'react-icons/fa'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import { useSession } from '@clerk/clerk-react'
 import { Input } from '@/components/ui/input'
 import { useSelectedProject } from '../context/selectedProject'
@@ -31,7 +31,9 @@ function Issue() {
   const sprint = useQuery(api.Sprint.getLastSprint, {
     projectName: selectedProject ?? undefined,
   })
-  const tasksofuser = useQuery(api.Task.getTasksofProject, {projectName: selectedProject ?? undefined})
+  const tasksofuser = useQuery(api.Task.getTasksofProject, {
+    projectName: selectedProject ?? undefined,
+  })
 
   const itemsPerPage = 8
 
@@ -73,7 +75,7 @@ function Issue() {
     <main className="h-screen">
       {isSignedIn && (
         <div className="flex">
-           <SideBar currentProject={selectedProject} />
+          <SideBar currentProject={selectedProject} />
           <div className="w-full overflow-hidden">
             {selectedProject ? (
               <div>

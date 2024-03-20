@@ -7,13 +7,16 @@ import {
   useSession,
 } from '@clerk/clerk-react'
 import React, { useState, useEffect } from 'react'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa'
 import { RiArrowUpDoubleFill } from 'react-icons/ri'
 import { MdDensityMedium } from 'react-icons/md'
 import { useSelectedProject } from '../context/selectedProject'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import { Button } from '@/components/ui/button'
+import Table from '@/components/Table'
+import Sprint from '@/components/Sprint'
 
 interface Ticket {
   id: number
@@ -37,6 +40,16 @@ function Activesprint() {
 
   const filterTicketsbystatus = (status: string) => {
     return filteredTasks?.filter((ticket) => ticket.status === status)
+  }
+
+  const [isNewSprintOpen, setNewSprintOpen] = useState(false)
+
+  const handleNewSprintClick = () => {
+    setNewSprintOpen(true)
+  }
+
+  const handleCloseWindow = () => {
+    setNewSprintOpen(false)
   }
 
   const getPriorityIcon = (priority: string) => {
@@ -67,6 +80,7 @@ function Activesprint() {
     ))
   }
 
+
   return (
     <main className="h-screen">
       {isSignedIn && (
@@ -75,17 +89,22 @@ function Activesprint() {
           <div className=" w-screen overflow-hidden">
             {selectedProject && sprint ? (
               <div>
-                <div className="p-4 border-b w-screen">
-                  <h1 className="text-xl font-bold mb-1">
-                    {selectedProject} {''}
-                    <span className="font-light">
-                      {''} / {sprint?.name}
-                    </span>
-                  </h1>
-                  <p className="text-sm font-light">
-                    <span className="font-bold text-sm">due at: {''}</span>
-                    {sprint?.due_at}
-                  </p>
+                <div className="p-4 border-b w-screen flex justify-between items-center">
+                  <div>
+                    <h1 className="text-xl font-bold mb-1">
+                      {selectedProject} {''}
+                      <span className="font-light">
+                        {''} / {sprint?.name}
+                      </span>
+                    </h1>
+                    <p className="text-sm font-light">
+                      <span className="font-bold text-sm">due at: {''}</span>
+                      {sprint?.due_at}
+                    </p>
+                  </div>
+                  <Button className="mr-80" onClick={handleNewSprintClick}>
+                    New Sprint
+                  </Button>
                 </div>
                 <div className="grid grid-cols-3 gap-2 p-4">
                   <div className="h-full border shadow-sm p-4">
@@ -101,6 +120,14 @@ function Activesprint() {
                     {renderTicketCards('done')}
                   </div>
                 </div>
+                {isNewSprintOpen && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-8 rounded-lg">
+                      <Sprint />
+                      <button onClick={handleCloseWindow}>Close</button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center text-sm p-8">

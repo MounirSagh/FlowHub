@@ -25,9 +25,10 @@ export const getTaskCompletionRateByProject = query({
     args: { projectName: v.optional(v.string()) },
     handler: async (ctx, args) => {
         const totalTasks = (await ctx.db.query("Task").filter((q) => q.eq(q.field("projectName"), args.projectName)).collect());
-        const completedTasks =(await ctx.db.query("Task").filter((q) => q.eq(q.field("projectName"), args.projectName)).filter((q) => q.eq(q.field("status"), "done")).collect());
+        const completedTasks = (await ctx.db.query("Task").filter((q) => q.eq(q.field("projectName"), args.projectName)).filter((q) => q.eq(q.field("status"), "done")).collect());
         if (completedTasks.length === 0) return 0;
-        return (completedTasks.length / totalTasks.length) * 100;
+        const completionRate = (completedTasks.length / totalTasks.length) * 100;
+        return Math.round(completionRate);
     }
 });
 
@@ -44,7 +45,7 @@ export const getLastFiveSprints = query({
 export const getLastTenTasks = query({
     args: { projectName: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        const sprints = await ctx.db.query("Task").filter((q) => q.eq(q.field("projectName"), args.projectName)).order("desc").take(10);
+        const sprints = await ctx.db.query("Task").filter((q) => q.eq(q.field("projectName"), args.projectName)).order("desc").take(5);
         return sprints;
     }
 });

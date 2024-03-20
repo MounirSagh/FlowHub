@@ -60,7 +60,7 @@ export default function TableDemo() {
 
   return (
     <div>
-      <Label className="font-bold text-lg">Recent Tasks</Label>
+      <Label className="font-semibold text-lg">Recent Tasks</Label>
       <Table>
         <TableHeader>
           <TableRow>

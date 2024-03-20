@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { api } from '../../convex/_generated/api'
+import { api } from '../../../convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import { FaChartLine, FaRegMap, FaListUl, FaPlus } from 'react-icons/fa'
@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useSelectedProject } from '../context/selectedProject'
-import { Button } from './ui/button'
+import { useSelectedProject } from '../../context/selectedProject'
+import { Button } from '../ui/button'
+import NewLink from '../Link'
 
 interface NavBarProps {
   className?: string
@@ -23,7 +24,7 @@ interface NavBarProps {
 }
 
 const navigationItems = [
-  { label: 'Roadmap', path: '/Roadmap', icon: <FaRegMap size={18} /> },
+  // { label: 'Roadmap', path: '/Roadmap', icon: <FaRegMap size={18} /> },
   {
     label: 'Active sprint',
     path: '/Active-Sprints',
@@ -79,6 +80,15 @@ const LeftSideBar: React.FC<NavBarProps> = ({ className, currentProject }) => {
   const handleSubmit = () => {
     navigate('/Setup')
   }
+
+  const handleClick = () => {
+    navigate('/NewLink')
+  }
+
+  const link = useQuery(api.Link.getLinkofProject, {
+    projectName: selectedProject ?? undefined,
+  })
+
   return (
     <div
       className={`w-[16vw] relative flex flex-col pt-4 h-screen border-r ml-6 ${className}`}
@@ -139,9 +149,30 @@ const LeftSideBar: React.FC<NavBarProps> = ({ className, currentProject }) => {
         <h3 className="text-sm font-extralight">
           Add a link to useful information to your whole team to see
         </h3>
-        <div className="flex items-center gap-2">
-          <FaPlus size={18} className="font-extralight" />
-          <span className="text-sm font-extralight">Add link</span>
+        <div className="flex-1 items-center gap-2">
+          <div className="flex flex-col">
+            {/* Display the links that I got from the convex database */}
+            {link &&
+              link.map((linkItem: any, index: number) => (
+                <div key={index}>
+                  <span className="text-sm font-light">{index + 1}. </span>
+                  <a
+                    href={linkItem.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-light underline"
+                  >
+                    {linkItem.title}
+                  </a>
+                </div>
+              ))}
+          </div>
+          <Button
+            className="text-sm font-extralight mt-2"
+            onClick={handleClick}
+          >
+            Add link
+          </Button>
         </div>
       </div>
     </div>

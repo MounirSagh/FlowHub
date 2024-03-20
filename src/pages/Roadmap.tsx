@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { SignedIn } from '@clerk/clerk-react'
-import SideBar from '@/components/SideBar'
+import SideBar from '@/components/Bars.tsx/SideBar'
 import { useSelectedProject } from '../context/selectedProject'
 import Sprint from '@/components/Sprint'
 

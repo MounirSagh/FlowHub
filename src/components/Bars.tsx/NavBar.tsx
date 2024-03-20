@@ -1,5 +1,5 @@
 import React from 'react'
-import { ModeToggle } from './mode-toggle'
+import { ModeToggle } from '../mode-toggle'
 import {
   SignInButton,
   SignedIn,

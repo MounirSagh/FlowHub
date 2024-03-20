@@ -6,13 +6,14 @@ import './index.css'
 import Roadmap from './pages/Roadmap'
 import { Providers } from './providers'
 import { ThemeProvider } from '@/components/theme-provider'
-import NavBar from './components/NavBar'
+import NavBar from './components/Bars.tsx/NavBar'
 import Landing from './pages/Landing'
 import Activesprints from './pages/Activesprints'
 import Report from './pages/Report'
 import Issue from './pages/Issue'
 import { Setup } from './pages/Setup'
 import { SelectedProjectProvider } from './context/selectedProject'
+import Link from './components/Link'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -31,6 +32,7 @@ function App() {
           <Route path="/Active-Sprints" element={<Activesprints />} />
           <Route path="/Reports" element={<Report />} />
           <Route path="/Issues" element={<Issue />} />
+          <Route path="/NewLink" element={<Link />} />
         </Routes>
       )}
     </Router>

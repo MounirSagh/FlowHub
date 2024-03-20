@@ -76,7 +76,6 @@
 //     //   setSelectedUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id))
 //     // }
 
-
 //   const [organizationName, setOrganizationName] = useState('')
 //   const [projectName, setProjectName] = useState('')
 //   const navigate = useNavigate()
@@ -200,7 +199,7 @@ export function Setup() {
       createProject({
         name: projectName,
       })
-      navigate('/Roadmap')
+      navigate('/Active-Sprints')
     } catch (error) {
       console.error('Error during submission:', error)
     }

@@ -27,6 +27,7 @@ export default defineSchema({
   }),
 
   Link: defineTable({
+    title: v.string(),
     link: v.string(),
     projectName: v.optional(v.string()),
     created_by: v.string()
