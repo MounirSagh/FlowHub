@@ -106,7 +106,7 @@ function Sprint() {
         <div className="flex">
           <div className="p-8">
             {selectedProject ? (
-              <Card className="w-[800px]">
+              <div className="w-[800px]">
                 <CardHeader>
                   <CardTitle>Create Sprint</CardTitle>
                   <CardDescription>
@@ -317,7 +317,7 @@ function Sprint() {
                   <Button variant="outline">Cancel</Button>
                   <Button onClick={handleSubmit}>Create</Button>
                 </CardFooter>
-              </Card>
+              </div>
             ) : (
               <div className="flex items-center text-sm">
                 No project has been chosen
